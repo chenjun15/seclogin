@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class UserEntity {
 
-    private Long id;
+    private Integer id;
 
     /**
      * 账号

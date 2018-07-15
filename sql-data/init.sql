@@ -1,4 +1,4 @@
-create database seclogin;
+CREATE DATABASE `seclogin` CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 use seclogin;
 
