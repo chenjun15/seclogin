@@ -24,6 +24,12 @@ public class SysUser implements UserDetails {
 
     private String password;
 
+    private String nickname;
+
+    /**
+     * 一个用户可以有多个身份。若只允许一个身份，则应为ManyToOne
+     * TODO: 若手动删除 sys_user 表里的一条数据，sys_user_roles 中对应该用户的条目并不会自动删除。请实现自动删除
+     */
     @ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
     private List<SysRole> roles;
 
@@ -32,7 +38,7 @@ public class SysUser implements UserDetails {
         List<GrantedAuthority> auths = new ArrayList<>();
         List<SysRole> roles = this.getRoles();
         for (SysRole role : roles) {
-            auths.add(new SimpleGrantedAuthority(role.getName()));
+            auths.add(new SimpleGrantedAuthority(role.getAuthority()));
         }
         return auths;
     }
@@ -79,6 +85,14 @@ public class SysUser implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public List<SysRole> getRoles() {

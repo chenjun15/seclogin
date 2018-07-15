@@ -1,17 +1,19 @@
 package com.seclogin.controller;
 
-import com.seclogin.entity.UserEntity;
-import com.seclogin.service.UserService;
-import lombok.AllArgsConstructor;
+import com.seclogin.entity.SysUser;
+import com.seclogin.service.SysUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
-@AllArgsConstructor
+//@AllArgsConstructor
 public class HomeController {
 
-    private final UserService userService;
+//    private final UserService userService;
+    @Autowired
+    SysUserService sysUserService;
 
     @GetMapping({"/", "/index", "/home"})
     public String root(){
@@ -29,9 +31,9 @@ public class HomeController {
     }
 
     @PostMapping("/register")
-    public String doRegister(UserEntity userEntity){
+    public String doRegister(SysUser sysUser){
         // 此处省略校验逻辑
-        if (userService.insert(userEntity))
+        if (sysUserService.save(sysUser) != null)
             return "redirect:register?success";
         return "redirect:register?error";
     }

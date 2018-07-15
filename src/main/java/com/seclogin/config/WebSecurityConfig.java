@@ -1,22 +1,17 @@
 package com.seclogin.config;
 
+import com.seclogin.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
-
-    private AnyUserDetailsService anyUserDetailsService;
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    public void setAnyUserDetailsService(AnyUserDetailsService anyUserDetailsService){
-        this.anyUserDetailsService = anyUserDetailsService;
-    }
+    private SysUserService sysUserService;
 
     /**
      * 匹配 "/" 路径，不需要权限即可访问
@@ -41,17 +36,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
      * 添加 UserDetailsService， 实现自定义登录校验
      */
     @Override
-    protected void configure(AuthenticationManagerBuilder builder) throws Exception{
-        builder.userDetailsService(anyUserDetailsService)
-                .passwordEncoder(passwordEncoder());
+    protected void configure(AuthenticationManagerBuilder builder) throws Exception {
+        builder.userDetailsService(sysUserService)
+                .passwordEncoder(sysUserService.passwordEncoder());
     }
 
     /**
-     * 密码加密
+     * 认证信息管理
+     *
+     * @param auth
+     * @throws Exception
      */
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(sysUserService);
     }
-
 }
